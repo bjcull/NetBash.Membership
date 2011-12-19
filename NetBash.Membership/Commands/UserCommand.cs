@@ -15,17 +15,12 @@ namespace NetBash.Membership.Commands
     [WebCommand("user", "Manage membership users using the default provider")]
     public class UserCommand : IWebCommand
     {
-        private Switch? _command;
+        private Command? _command;
         private MembershipProvider _provider;
 
         public UserCommand()
         {
             _provider = System.Web.Security.Membership.Provider;
-        }
-
-        public UserCommand(string defaultAnswer)
-        {
-            _provider = System.Web.Security.Membership.Provider;            
         }
 
         public string Process(string[] args)
@@ -34,21 +29,21 @@ namespace NetBash.Membership.Commands
 
             var p = new OptionSet() {
                 { "c|create", "create a user\nUSAGE: user --create username password email",
-                    v => _command = Switch.Create },
+                    v => _command = Command.Create },
                 { "d|delete", "delete a user\nUSAGE: user --delete username",
-                    v => _command = Switch.Delete },
+                    v => _command = Command.Delete },
                 { "l|list", "return a list of users",
-                    v => _command = Switch.List },
+                    v => _command = Command.List },
                 { "r|reset", "reset a password\nUSAGE: user --reset username [answer]",
-                    v => _command = Switch.Reset },
+                    v => _command = Command.Reset },
                 { "f|find=", "find a user by username or email\nUSAGE: user --find=[name|email] query",
-                    v => { if (v == "email") _command = Switch.FindEmail; else _command = Switch.FindName; } },
+                    v => { if (v == "email") _command = Command.FindEmail; else _command = Command.FindName; } },
                 { "u|unlock", "unlock a user\nUSAGE: user --unlock username",
-                    v => _command = Switch.Unlock },
+                    v => _command = Command.Unlock },
                 { "o|online", "get number of online users\n USAGE:user --online",
-                    v => _command = Switch.Online },
+                    v => _command = Command.Online },
                 { "i|install", "applies the sql membership schema to the given database",
-                  v => _command = Switch.Install },
+                  v => _command = Command.Install },
                 { "h|help", "show this list of options",
                     v => _command = null }
             };
@@ -67,7 +62,7 @@ namespace NetBash.Membership.Commands
             }
 
             // perform the selected command
-            if (_command == Switch.Create)
+            if (_command == Command.Create)
             {
                 if (extras.Count == 3)
                 {
@@ -89,7 +84,7 @@ namespace NetBash.Membership.Commands
                     sb.AppendLine("USAGE: user --create username password email");
                 }
             }
-            else if (_command == Switch.Delete)
+            else if (_command == Command.Delete)
             {
                 if (extras.Count == 1)
                 {
@@ -109,7 +104,7 @@ namespace NetBash.Membership.Commands
                     sb.AppendLine("USAGE: user --delete username");
                 }
             }
-            else if (_command == Switch.List)
+            else if (_command == Command.List)
             {
                 var users = System.Web.Security.Membership.GetAllUsers();
 
@@ -126,7 +121,7 @@ namespace NetBash.Membership.Commands
                     sb.AppendLine("No users found");
                 }
             }
-            else if (_command == Switch.FindEmail)
+            else if (_command == Command.FindEmail)
             {
                 if (extras.Count == 1)
                 {
@@ -155,7 +150,7 @@ namespace NetBash.Membership.Commands
                     sb.AppendLine("USAGE: user --find=email emailaddress");
                 }
             }
-            else if (_command == Switch.FindName)
+            else if (_command == Command.FindName)
             {
                 if (extras.Count == 1)
                 {
@@ -184,7 +179,7 @@ namespace NetBash.Membership.Commands
                     sb.AppendLine("USAGE: user --find=name");
                 }
             }
-            else if (_command == Switch.Online)
+            else if (_command == Command.Online)
             {
                 int online = _provider.GetNumberOfUsersOnline();
                 if (online == 1)
@@ -193,7 +188,7 @@ namespace NetBash.Membership.Commands
                     sb.AppendFormat("There are currently {0} users online", online);
                 sb.AppendLine();
             }
-            else if (_command == Switch.Reset)
+            else if (_command == Command.Reset)
             {
                 if (extras.Count >= 1 && extras.Count <= 2)
                 {
@@ -213,7 +208,7 @@ namespace NetBash.Membership.Commands
                     sb.AppendLine("USAGE: user --reset username [answer]");
                 }
             }
-            else if (_command == Switch.Unlock)
+            else if (_command == Command.Unlock)
             {
                 if (extras.Count == 1)
                 {
@@ -233,7 +228,7 @@ namespace NetBash.Membership.Commands
                     sb.AppendLine("USAGE: user --unlock username");
                 }
             }
-            else if (_command == Switch.Install)
+            else if (_command == Command.Install)
             {
                 if (extras.Count == 1)
                 {
@@ -310,7 +305,7 @@ namespace NetBash.Membership.Commands
             get { return false; }
         }
 
-        private enum Switch
+        private enum Command
         {
             Create,
             Delete,
